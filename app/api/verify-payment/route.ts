@@ -35,9 +35,7 @@ export async function POST(request: NextRequest) {
     // Verify the transaction
     const isValid = await verifyPaymentTransaction(
       signature,
-      connection,
-      expectedPrice,
-      x402Config.payTo
+      connection
     );
     
     if (isValid) {

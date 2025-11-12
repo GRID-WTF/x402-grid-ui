@@ -1,14 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Header } from '../components/header';
 
+interface TestResponse {
+  status: number;
+  statusText: string;
+  headers: {
+    'X-X402-Protected': string | null;
+    'X-Payment-Required': string | null;
+    'X-Payment-Verified': string | null;
+  };
+  body: unknown;
+}
+
 export default function TestAPIPage() {
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<TestResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const testEndpoint = async (endpoint: string, componentType: string, config: any) => {
+  const testEndpoint = async (endpoint: string, componentType: string, config: Record<string, unknown>) => {
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -37,8 +49,9 @@ export default function TestAPIPage() {
         },
         body: data,
       });
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -176,7 +189,7 @@ export default function TestAPIPage() {
                   <h4 className="font-semibold text-blue-900 mb-2">💡 What this means:</h4>
                   <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
                     <li>The endpoint is working correctly!</li>
-                    <li>It's returning a 402 status because no payment was included</li>
+                    <li>It&apos;s returning a 402 status because no payment was included</li>
                     <li>The response includes payment requirements (price, network, payTo address)</li>
                     <li>To get the actual UI data, you need to include payment headers</li>
                     <li>Use the main app (/) to test the full payment flow</li>
@@ -203,12 +216,12 @@ export default function TestAPIPage() {
             <div>
               <h3 className="font-semibold text-lg mb-2">2. Test With Payment (Main App)</h3>
               <p className="text-gray-600 mb-2">
-                Go to <a href="/" className="text-blue-600 hover:underline">/</a> to test the full payment flow:
+                Go to <Link href="/" className="text-blue-600 hover:underline">/</Link> to test the full payment flow:
               </p>
               <ul className="list-disc list-inside text-gray-600 space-y-1 ml-4">
                 <li>Connect your Solana wallet</li>
                 <li>Select a component to render</li>
-                <li>Click "Pay & Render"</li>
+                <li>Click &quot;Pay & Render&quot;</li>
                 <li>Approve the transaction</li>
                 <li>The API will verify payment and return the UI data</li>
               </ul>

@@ -41,9 +41,7 @@ export async function createPaymentTransaction({
  */
 export async function verifyPaymentTransaction(
   signature: string,
-  connection: Connection,
-  _expectedAmount: number,
-  _expectedRecipient: string
+  connection: Connection
 ): Promise<boolean> {
   try {
     const transaction = await connection.getTransaction(signature, {
